@@ -161,12 +161,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 {
                     // Acciones adicionales a realizar si el usuario activa el Bluetooth
 
-                    Toast.makeText(getApplicationContext(),"Se a Encendido El bluetooth Jonatha ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Se a Encendido El bluetooth ",Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
                     // Acciones adicionales a realizar si el usuario no activa el Bluetooth
-                    Toast.makeText(getApplicationContext(),"No Se a Encendido El bluetooth Jonatha ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"No Se a Encendido El bluetooth ",Toast.LENGTH_SHORT).show();
 
                 }
                 break;
