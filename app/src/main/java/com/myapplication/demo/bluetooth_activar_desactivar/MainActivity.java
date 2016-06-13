@@ -66,6 +66,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //this.bAdapter.enable();
         }
     }
+    // Instanciamos un BroadcastReceiver que se encargara de detectar si el estado
+// del Bluetooth del dispositivo ha cambiado mediante su handler onReceive
+    private final BroadcastReceiver bReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            // Filtramos por la accion. Nos interesa detectar BluetoothAdapter.ACTION_STATE_CHANGED
+            if(BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)){
+                final int estado = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (estado){
+                    // Apagado
+                    case BluetoothAdapter.STATE_OFF:
+                        ((Button)findViewById(R.id.btn_bluetooth)).setText(R.string.activarBluetooth);
+                        break;
+                    // Encendido
+                    case BluetoothAdapter.STATE_ON:
+                        ((Button)findViewById(R.id.btn_bluetooth)).setText(R.string.desactivarBluetooth);
+                        break;
+                    default:
+                        break;
+
+                }
+            }
+        }
+    };
     /**
      * Suscribe el BroadcastReceiver a los eventos relacionados con Bluetooth que queremos
      * controlar.
@@ -118,33 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
     }
 
-    // Instanciamos un BroadcastReceiver que se encargara de detectar si el estado
-// del Bluetooth del dispositivo ha cambiado mediante su handler onReceive
-    private final BroadcastReceiver bReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
 
-            // Filtramos por la accion. Nos interesa detectar BluetoothAdapter.ACTION_STATE_CHANGED
-            if(BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)){
-                final int estado = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                        BluetoothAdapter.ERROR);
-                switch (estado){
-                    // Apagado
-                    case BluetoothAdapter.STATE_OFF:
-                        ((Button)findViewById(R.id.btn_bluetooth)).setText(R.string.desactivarBluetooth);
-                        break;
-                    // Encendido
-                    case BluetoothAdapter.STATE_ON:
-                        ((Button)findViewById(R.id.btn_bluetooth)).setText(R.string.activarBluetooth);
-                        break;
-                    default:
-                        break;
-
-                }
-            }
-        }
-    };
     /**
      * Handler del evento desencadenado al retornar de una actividad. En este caso, se utiliza
      * para comprobar el valor de retorno al lanzar la actividad que activara el Bluetooth.
