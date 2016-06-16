@@ -4,5 +4,6 @@
     <string name="activarBluetooth">Activar Bluetooth</string>
     <string name="desactivarBluetooth">Desactivar Bluetooth</string>
     <string name="sinBluetooth">Dispositivo sin Bluetooth</string>
+    <string name="buscarDispos">Buscar Dispositivos</string>
 
 </resources>

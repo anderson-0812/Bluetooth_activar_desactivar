@@ -1,6 +1,7 @@
 package com.myapplication.demo.bluetooth_activar_desactivar;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     // Declaramos una constante para lanzar los Intent de activacion de Bluetooth
@@ -25,6 +28,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Button btnBluetooth;// = (Button) findViewById(R.id.btn_bluetooth);
     BluetoothAdapter bAdapter; //Adapter para uso del Bluetooth
 // https://www.youtube.com/watch?v=ayzmbWJlLo0
+
+    // Listado de dispositivos
+    ArrayList <BluetoothDevice> arrayDevices;
+
+    Button btn_buscarDispositivo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +54,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.btnBluetooth.setOnClickListener(this);
         this.bAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        this.btn_buscarDispositivo = (Button)findViewById(R.id.btn_buscarDispositivo);
+        this.btn_buscarDispositivo.setOnClickListener(this);
+
         if(this.bAdapter == null){
             this.btnBluetooth.setEnabled(false);
             this.btnBluetooth.setText(R.string.sinBluetooth);
+            this.btn_buscarDispositivo.setEnabled(false);
+            this.btn_buscarDispositivo.setText(R.string.buscarDispos);
+
             return;
         }else{
             setEstadoBluetootth();
@@ -60,9 +74,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void setEstadoBluetootth(){
         if(this.bAdapter.isEnabled()){
             this.btnBluetooth.setText(R.string.desactivarBluetooth);
+            this.btn_buscarDispositivo.setText(R.string.buscarDispos);
             //this.bAdapter.disable();
         }else{
             this.btnBluetooth.setText(R.string.activarBluetooth);
+            this.btn_buscarDispositivo.setEnabled(false);
             //this.bAdapter.enable();
         }
     }
@@ -81,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Apagado
                     case BluetoothAdapter.STATE_OFF:
                         ((Button)findViewById(R.id.btn_bluetooth)).setText(R.string.activarBluetooth);
+                        ((Button)findViewById(R.id.btn_buscarDispositivo)).setEnabled(false);
+
                         break;
                     // Encendido
                     case BluetoothAdapter.STATE_ON:
@@ -91,6 +109,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
             }
+
+            // BluetoothDevice.ACTION_FOUND
+            // Cada vez que se descubra un nuevo dispositivo por Bluetooth, se ejecutara
+            // este fragmento de codigo
+
+
+
         }
     };
     /**
