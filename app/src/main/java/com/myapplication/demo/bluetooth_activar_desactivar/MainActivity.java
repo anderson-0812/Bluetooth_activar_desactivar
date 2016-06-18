@@ -14,7 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList <BluetoothDevice> arrayDevices;
 
     Button btn_buscarDispositivo;
+
+    ListView lvDispositivos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         this.btn_buscarDispositivo = (Button)findViewById(R.id.btn_buscarDispositivo);
         this.btn_buscarDispositivo.setOnClickListener(this);
+        this.lvDispositivos = (ListView)findViewById(R.id.lvDispositivos);
 
         if(this.bAdapter == null){
             this.btnBluetooth.setEnabled(false);
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Encendido
                     case BluetoothAdapter.STATE_ON:
                         ((Button)findViewById(R.id.btn_bluetooth)).setText(R.string.desactivarBluetooth);
+                        ((Button)findViewById(R.id.btn_buscarDispositivo)).setEnabled(true);
                         break;
                     default:
                         break;
@@ -110,12 +116,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
 
+
             // BluetoothDevice.ACTION_FOUND
             // Cada vez que se descubra un nuevo dispositivo por Bluetooth, se ejecutara
             // este fragmento de codigo
+            if(BluetoothDevice.ACTION_FOUND.equals(action)){
+                // si no ha sido inicializado el array lo inicializamos aqui
+                if(arrayDevices == null){
+                    arrayDevices = new ArrayList<BluetoothDevice>();
+                }
+                // Extraemos el dispositivo del intent mediante la clave BluetoothDevice.EXTRA_DEVICE
+                BluetoothDevice dispositivo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
+                // Añadimos el dispositivo al array
+                arrayDevices.add(dispositivo);
 
+                // Le asignamos un nombre del estilo NombreDispositivo [00:11:22:33:44]
+                String descripcionDispositivo = dispositivo.getName() + "[" + dispositivo.getAddress() + "]";
 
+                // Mostramos que hemos encontrado el dispositivo por el Toast
+                Toast.makeText(getBaseContext(),getString(R.string.DetectadoDispositivo) + ": " + descripcionDispositivo, Toast.LENGTH_LONG).show();
+            }
+            // este codifo se ejecuta cuando el Bluetooth finaliza labusqueda de dispositivos
+            else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
+                // Instanciamos un nuevo adapter para el ListView mediante la clase que acabamos de crear
+                ArrayAdapter arrayAdapter = new BluetoothDeviceArrayAdapter(getApplicationContext()
+                        ,android.R.layout.simple_list_item_2,arrayDevices);
+                lvDispositivos.setAdapter(arrayAdapter);
+                Toast.makeText(getBaseContext(),"Fin de la busqueda ",Toast.LENGTH_LONG).show();
+            }
         }
     };
     /**
