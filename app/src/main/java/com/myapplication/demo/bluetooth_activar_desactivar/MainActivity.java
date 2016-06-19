@@ -156,6 +156,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Registramos el BroadcastReceiver que instanciamos previamente para
         // detectar los distintos eventos que queremos recibir
         IntentFilter filtro = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filtro.addAction(BluetoothDevice.ACTION_FOUND);
+        filtro.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(bReceiver,filtro);
     }
     @Override
@@ -196,6 +198,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //this.bAdapter.enable();
 
                     }
+                case R.id.btn_buscarDispositivo:
+                    if(arrayDevices != null){
+                        arrayDevices.clear();
+                    }
+
+                    // Comprobamos si no existe un descubrimiento en curso si e safimativo se cancela
+                    if(bAdapter.isDiscovering()){
+                        bAdapter.cancelDiscovery();
+                    }
+                    // Iniciamos la busqueda de dispositivos y mostramosmensaje de que procesoa  aempezado
+                    if(bAdapter.startDiscovery()){
+                        Toast.makeText(this,"Iniciando busqueda de dispositivos bluetooth",Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(this,"Error al inoiciar busqueda de dispositivos bluetooth",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
             }
     }
 
