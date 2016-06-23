@@ -63,7 +63,8 @@ public class BluetoothService {
 
         }
 
-        // Metodo principal del hilo, encargado de realizar las lecturas
+        // Metodo principal del hilo, encargado de
+        // realizar las lecturas
         public void run(){
             byte[] buffer = new byte[1024];
             int bytes;
@@ -79,6 +80,20 @@ public class BluetoothService {
                 } catch (IOException e){
                     Log.e(TAG, "HiloConexion.run(): Error al realizar la lectura", e);
                 }
+            }
+        }
+        // Metodo principal del hilo, encargado de
+        // realizar las escrituras
+        public void escribir(byte[] buffer){
+            try{
+                // Escribir en el flujo de salida del socket
+                outputStream.write(buffer);
+                // Enviamos la informacion a la actividad a traves del handler.
+                // El metodo handleMessage sera el encargado de recibir el mensaje
+                // y mostrar los datos enviados en el Toast
+                handler.obtainMessage(MSG_ESCRIBIR,-1,-1,buffer).sentToTarget();
+            }catch (IOException e){
+                Log.e(TAG,"HiloConexion.escribir(): Error al realizar la escritura",e);
             }
         }
     }
