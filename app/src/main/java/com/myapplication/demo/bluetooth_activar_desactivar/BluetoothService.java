@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.logging.Handler;
 
@@ -62,7 +63,24 @@ public class BluetoothService {
 
         }
 
-
+        // Metodo principal del hilo, encargado de realizar las lecturas
+        public void run(){
+            byte[] buffer = new byte[1024];
+            int bytes;
+            setEstado(ESTADO_CONECTADO);
+            // Mientras se mantenga la conexion el hilo se mantiene en espera ocupada
+            // leyendo del flujo de entrada
+            while(true){
+                try{
+                    // Leemos del flujo de entrada del socket
+                    bytes = inputStream.read(buffer);
+                } catch (InterruptedIOException e){
+                    e.printStackTrace();
+                } catch (IOException e){
+                    Log.e(TAG, "HiloConexion.run(): Error al realizar la lectura", e);
+                }
+            }
+        }
     }
 
 }
